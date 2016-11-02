@@ -1,0 +1,17 @@
+@import 'components/0_Global/SCSS/reset';
+@import 'components/0_Global/SCSS/base';
+@import 'components/0_Global/SCSS/grid';
+
+body, html, #root, main {
+  height: 100%;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background: material-color('grey','100');
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}

@@ -1,0 +1,11 @@
+.Keymaps {
+  margin-top: 2em;
+  &__floatingButton {
+    position: fixed;
+    bottom: 2em;
+    right: 2em;
+  }
+  &__list {
+    background: white;
+  }
+}
