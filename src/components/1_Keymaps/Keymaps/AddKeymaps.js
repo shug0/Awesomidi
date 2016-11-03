@@ -16,7 +16,6 @@ class AddKeymaps extends Component {
 			keymapName: '',
 			keymapCommand: ''
 		};
-
 	}
 
 	handleChangeName = (event) => {

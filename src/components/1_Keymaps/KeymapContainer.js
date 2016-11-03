@@ -4,10 +4,11 @@ import React, { Component } from 'react';
 import './KeymapContainer.scss';
 // LIBS
 const Rebase = require('re-base');
+// Material
+import {grey900} from 'material-ui/styles/colors';
 
 // Components
-import ShortcutsList from './Keymaps/KeymapList';
-import AddKeymaps from './Keymaps/AddKeymaps';
+import KeymapList from './Keymaps/KeymapList';
 
 const base = Rebase.createClass({
 	apiKey: "AIzaSyDbW6kUyevj7tEYQ2c6p-s7fwuz0xxx8ps",
@@ -47,7 +48,6 @@ class KeymapContainer extends Component {
 	}
 	
 	handleAddKeymap(newKeymap){
-		console.log(newKeymap);
 		this.setState({
 			keymaps: this.state.keymaps.concat([newKeymap])
 		});
@@ -61,22 +61,23 @@ class KeymapContainer extends Component {
 		})
 	}
 
+	handleEditKeymap() {
+
+	}
+
 	render() {
 		return (
 			<section className='Keymaps wrapper'>
-				<h2>Keymaps List</h2>
+				<h2 style={{color: grey900}}>Keymaps List</h2>
 				{ this.state.loading &&
-					<h3> LOADING... </h3> }
+				<h3> LOADING... </h3> }
 				{ !this.state.loading &&
-					<ShortcutsList
+					<KeymapList
 						keymaps={this.state.keymaps}
 						removeKeymap={this.handleRemoveKeymap}
+						addKeymap={this.handleAddKeymap}
 					/>
 				}
-
-				<AddKeymaps
-					addKeymap={this.handleAddKeymap}
-				/>
 
 			</section>
 		);

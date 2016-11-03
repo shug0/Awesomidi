@@ -25,10 +25,7 @@ const muiTheme = getMuiTheme({
 		primary2Color: cyan700,
 		accent1Color: pinkA200,
 		pickerHeaderColor: cyan500,
-	},
-	appBar: {
-		height: 50,
-	},
+	}
 });
 
 const AppContainer = ({ children, location }) => (
