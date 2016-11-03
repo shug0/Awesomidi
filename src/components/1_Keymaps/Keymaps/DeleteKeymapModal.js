@@ -15,7 +15,7 @@ class DeleteKeymapModal extends Component {
 
 	handleClose()  {
 		this.setState({open: false});
-		this.props.deleteModalIsClosed();
+		this.props.closeModal();
 	};
 
 	handleDelete() {
@@ -47,7 +47,7 @@ class DeleteKeymapModal extends Component {
 					titleStyle={{fontWeight: 100}}
 					actions={actions}
 					modal={false}
-					open={this.props.isClicked}
+					open={this.props.isDeleteIsClicked}
 				/>
 			</span>
 		);

@@ -9,28 +9,38 @@ import IconButton from 'material-ui/IconButton';
 
 // COMPONENTS
 import DeleteKeymapModal from './DeleteKeymapModal';
-import AddKeymaps from './AddKeymaps';
+import EditKeymapModal from './EditKeymapModal';
+import AddKeymaps from './AddKeymap';
 
 class KeymapList extends Component {
 
 	constructor() {
 		super();
 		this.state = {
-			deletedIndex: null
+			keymapToDeleteIndex: null,
+			keymapToEditIndex: null
 		};
 		this.handleIconDeleteIsClicked = this.handleIconDeleteIsClicked.bind(this);
+		this.handleKeymapIsClicked = this.handleKeymapIsClicked.bind(this);
 		this.handleModalIsClosed = this.handleModalIsClosed.bind(this);
 	}
 
 	handleModalIsClosed() {
 		this.setState({
-			deletedIndex: null
+			keymapToDeleteIndex: null,
+			keymapToEditIndex: null
 		})
 	}
 
 	handleIconDeleteIsClicked(index) {
 		this.setState({
-			deletedIndex: index,
+			keymapToDeleteIndex: index,
+		});
+	}
+
+	handleKeymapIsClicked(index) {
+		this.setState({
+			keymapToEditIndex: index
 		});
 	}
 
@@ -48,18 +58,28 @@ class KeymapList extends Component {
 						primaryText={item.name}
 						secondaryText={item.command}
 						leftAvatar={<Avatar icon={<NeutralFace />} />}
+						onTouchTap={() => this.handleKeymapIsClicked(index)}
 						rightIconButton={
 							<IconButton
 								onTouchTap={() => this.handleIconDeleteIsClicked(index)}
-								children={
+								children={[
 									<DeleteKeymapModal
 										index={index}
+										key={"deleteModal-"+index}
 										name={item.name}
-										isClicked={index === this.state.deletedIndex}
-										deleteModalIsClosed={this.handleModalIsClosed}
+										isDeleteIsClicked={index === this.state.keymapToDeleteIndex}
+										closeModal={this.handleModalIsClosed}
 										removeKeymap={this.props.removeKeymap}
+									/>,
+									<EditKeymapModal
+										index={index}
+										key={"editModal-"+index}
+										keymap={item}
+										isEditIsClicked={index === this.state.keymapToEditIndex}
+										closeModal={this.handleModalIsClosed}
+										editKeymap={this.props.editKeymap}
 									/>
-								}
+								]}
 							/>
 						}
 					/>

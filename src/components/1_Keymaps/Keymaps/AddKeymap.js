@@ -6,39 +6,42 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 
-class AddKeymaps extends Component {
+class AddKeymap extends Component {
 
 	constructor() {
 		super();
-
 		this.state = {
 			open: false,
 			keymapName: '',
 			keymapCommand: ''
 		};
+		this.handleChangeName = this.handleChangeName.bind(this);
+		this.handleChangeCommand = this.handleChangeCommand.bind(this);
+		this.handleClose = this.handleClose.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	handleChangeName = (event) => {
+	handleChangeName(event) {
 		this.setState({
 			keymapName: event.target.value,
 		});
 	};
 
-	handleChangeCommand = (event) => {
+	handleChangeCommand(event) {
 		this.setState({
 			keymapCommand: event.target.value,
 		});
 	};
 
-	handleOpen = () => {
+	handleOpen() {
 		this.setState({open: true});
 	};
 
-	handleClose = () => {
+	handleClose() {
 		this.setState({open: false});
 	};
 
-	handleSubmit = () => {
+	handleSubmit() {
 		const newKeymap = {
 			name: this.state.keymapName,
 			command: this.state.keymapCommand
@@ -49,8 +52,8 @@ class AddKeymaps extends Component {
 
 	render() {
 
-		const formFilled =
-			!(this.state.keymapName.length > 2 && this.state.keymapCommand.length > 2);
+		// If all the form are filled => true
+		const formFilled = !(this.state.keymapName.length > 2 && this.state.keymapCommand.length > 2);
 
 		const actions = [
 			<FlatButton
@@ -80,19 +83,19 @@ class AddKeymaps extends Component {
 					modal={true}
 					open={this.state.open}
 				>
-				<TextField
-					floatingLabelText="Name"
-					value={this.state.keymapName}
-					onChange={this.handleChangeName}
-				/>
-				<TextField
-					floatingLabelText="Command"
-					value={this.state.keymapCommand}
-					onChange={this.handleChangeCommand}
-				/>
+					<TextField
+						floatingLabelText="Name"
+						value={this.state.keymapName}
+						onChange={this.handleChangeName}
+					/>
+					<TextField
+						floatingLabelText="Command"
+						value={this.state.keymapCommand}
+						onChange={this.handleChangeCommand}
+					/>
 				</Dialog>
 			</div>
 		);
 	}
 }
-export default AddKeymaps;
+export default AddKeymap;

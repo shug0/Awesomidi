@@ -6,9 +6,7 @@ import KeymapsContainer from './1_Keymaps/KeymapContainer';
 import './App.scss';
 
 class App extends Component {
-
 	render() {
-
 		return (
 			<main className='App'>
 				<KeymapsContainer />
