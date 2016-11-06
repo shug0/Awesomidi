@@ -49,7 +49,7 @@ class KeymapList extends Component {
 		let listItems;
 		let nodeContent;
 
-		if (this.props.keymaps.length > 0) {
+		if (this.props.keymaps.length !== 0) {
 			listItems = this.props.keymaps.map((item, index) => {
 
 				return (
@@ -87,7 +87,9 @@ class KeymapList extends Component {
 			});
 			nodeContent =
 				<Paper zDepth={1}>
-					<List className="Keymaps__list">{listItems}</List>
+					<List className="Keymaps__list" style={{background: 'white'}}>
+						{listItems}
+					</List>
 				</Paper>;
 		}
 		else {

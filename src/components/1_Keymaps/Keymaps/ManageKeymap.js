@@ -7,7 +7,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-class AddKeymap extends Component {
+class ManageKeymap extends Component {
 
 	constructor() {
 		super();
@@ -15,7 +15,8 @@ class AddKeymap extends Component {
 			open: false,
 			keymapName: '',
 			keymapCommand: '',
-			keymapID: ''
+			keymapKeyID: '',
+			action: 'neutral'
 		};
 		this.handleChangeName = this.handleChangeName.bind(this);
 		this.handleChangeCommand = this.handleChangeCommand.bind(this);
@@ -25,28 +26,38 @@ class AddKeymap extends Component {
 		this.handleOpen = this.handleOpen.bind(this);
 	}
 
+	componentDidMount() {
+		this.setState({
+			action: this.props.action
+		});
+		if (this.props.action === 'edit') {
+			this.setState({
+				keymapName: this.props.keymap.name,
+				keymapCommand: this.props.keymap.command,
+				keymapKeyID: this.props.keymap.keyID,
+			});
+		}
+	}
+
 	handleChangeName(event) {
 		this.setState({
 			keymapName: event.target.value,
 		});
 	};
-
 	handleChangeCommand(event) {
 		this.setState({
 			keymapCommand: event.target.value,
 		});
 	};
-
 	handleChangeID(event) {
 		this.setState({
-			keymapID: event.target.value,
+			keymapKeyID: event.target.value,
 		});
 	};
 
 	handleOpen() {
 		this.setState({open: true});
 	};
-
 	handleClose() {
 		this.setState({open: false});
 	};
@@ -57,7 +68,14 @@ class AddKeymap extends Component {
 			command: this.state.keymapCommand,
 			ID: this.state.keymapKeyID
 		};
-		this.props.addKeymap(newKeymap);
+		switch(this.state.action) {
+			case 'add':
+				this.props.addKeymap(newKeymap);
+				break;
+			case 'edit':
+				this.props.editKeymap(this.props.index, newKeymap);
+				break;
+		}
 		this.setState({open: false});
 	};
 
@@ -107,25 +125,25 @@ class AddKeymap extends Component {
 						floatingLabelText="Name"
 						value={this.state.keymapName}
 						onChange={this.handleChangeName}
-					  style={{width: '100%'}}
+						style={{width: '100%'}}
 					/>
 					<TextField
 						floatingLabelText="Command"
 						value={this.state.keymapCommand}
 						onChange={this.handleChangeCommand}
-					  style={{width: '100%'}}
+						style={{width: '100%'}}
 					/>
 					<RaisedButton
 						label="Bind MIDI Key"
 						labelPosition="before"
 						containerElement="label"
-					  style={{
-						  marginTop: '1em'
-					  }}
+						style={{
+							marginTop: '1em'
+						}}
 					/>
 				</Dialog>
 			</div>
 		);
 	}
 }
-export default AddKeymap;
+export default ManageKeymap;

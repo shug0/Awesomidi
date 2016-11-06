@@ -1,35 +1,24 @@
 // CORE
 import React, { Component } from 'react';
-// SCSS
-import './KeymapContainer.scss';
-// LIBS
-const Rebase = require('re-base');
 // Material
-import {grey900} from 'material-ui/styles/colors';
-import Snackbar from 'material-ui/Snackbar';
-// Components
-import KeymapList from './Keymaps/KeymapList';
+import {grey900, pinkA200} from 'material-ui/styles/colors';
+import LinearProgress from 'material-ui/LinearProgress';
 
-// Setuping Firebase
-const base = Rebase.createClass({
-	apiKey: "AIzaSyDbW6kUyevj7tEYQ2c6p-s7fwuz0xxx8ps",
-	authDomain: "awesomidi.firebaseapp.com",
-	databaseURL: "https://awesomidi.firebaseio.com",
-	storageBucket: "awesomidi.appspot.com",
-	messagingSenderId: "181061673796"
-});
+// Components
+import KeymapsList from './Keymaps/KeymapList';
 
 // Emoji Array
-const emojiAnimals = ['🐶','🐵','🐺','🐮','🐔','🦁','🐧','🐼','🐯','🐭','🐱','🐹','🐰','🐻','🐨','🐷','🐦','🐤','🐗'];
-const randomAnimal = () => emojiAnimals[Math.floor(Math.random()*emojiAnimals.length)];
+//const emojiAnimals = ['🐶','🐵','🐺','🐮','🐔','🦁','🐧','🐼','🐯','🐭','🐱','🐹','🐰','🐻','🐨','🐷','🐦','🐤','🐗'];
+//const randomAnimal = () => emojiAnimals[Math.floor(Math.random()*emojiAnimals.length)];
 
-class KeymapContainer extends Component {
+class KeymapsContainer extends Component {
 
 	constructor(){
 		super();
 		this.state = {
 			keymaps: [],
 			loading: true,
+			appInitialised: false,
 			openSnackbar: false
 		};
 		this.handleAddKeymap = this.handleAddKeymap.bind(this);
@@ -40,7 +29,10 @@ class KeymapContainer extends Component {
 
 	// Firebase Syncing with keymaps state
 	componentDidMount(){
-		base.syncState('keymaps', {
+		const userID = this.props.userCredentials.user.uid;
+		const base = this.props.base;
+
+		base.syncState(userID+'/keymaps', {
 			context: this,
 			state: 'keymaps',
 			asArray: true,
@@ -50,12 +42,12 @@ class KeymapContainer extends Component {
 				});
 			}
 		});
+
 	}
 	// Removing Firebase if unmount
 	componentWillUnmount(){
-		base.removeBinding(this.ref);
+		this.props.base.removeBinding(this.ref);
 	}
-
 
 	handleAddKeymap(newKeymap){
 		this.setState({
@@ -86,10 +78,10 @@ class KeymapContainer extends Component {
 	}
 
 	componentWillUpdate(nextProps, nextState) {
-		console.log(this.state.keymaps);
 		if (
 			nextState.keymaps !== this.state.keymaps &&
-			this.state.openSnackbar === false
+			this.state.openSnackbar === false &&
+			this.state.appInitialised === true
 		) {
 			this.setState({
 				openSnackbar: true
@@ -97,49 +89,42 @@ class KeymapContainer extends Component {
 		}
 	}
 
+	componentDidUpdate(nextProps, nextState) {
+		if (nextState.keymaps !== this.state.keymaps) {
+			this.setState({
+				appInitialised: true
+			});
+		}
+	}
+
 	render() {
 		return (
-			<section className='Keymaps wrapper'>
 
+			<section className='wrapper' style={{marginTop: '2em'}}>
 				<h2 style={{color: grey900}}>Keymaps List</h2>
 
 				{ this.state.loading &&
-					<h3> LOADING... </h3>
+					<LinearProgress
+						mode="indeterminate"
+						style={{
+							position: 'absolute',
+							top: '64px',
+							left: '0'
+						}}
+						color={pinkA200}
+					/>
 				}
 
 				{ !this.state.loading &&
-					<KeymapList
+					<KeymapsList
 						keymaps={this.state.keymaps}
 						removeKeymap={this.handleRemoveKeymap}
 						addKeymap={this.handleAddKeymap}
 						editKeymap={this.handleEditKeymap}
 					/>
 				}
-
-				{ this.state.openSnackbar &&
-					<Snackbar
-						style={{
-							left: 'inherit',
-							top: '1.5em',
-							right: '1.5em',
-							transform: 'translate()'
-						}}
-						bodyStyle={{
-							backgroundColor: 'white',
-							width: 'auto',
-							boxShadow: '1px 2px 10px -1px rgba(0,0,0,0.1)'
-						}}
-						contentStyle={{
-							color: grey900
-						}}
-						open={this.state.openSnackbar}
-						message={"Un utilisateur a fait une modification " + randomAnimal() + '  !'}
-						autoHideDuration={2000}
-						onRequestClose={this.handleSnackbarRequestClose}
-					/>
-				}
 			</section>
 		);
 	}
 }
-export default KeymapContainer;
+export default KeymapsContainer;

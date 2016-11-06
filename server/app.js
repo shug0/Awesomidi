@@ -1,7 +1,17 @@
-var midi = require('midi');
+const midi = require('midi');
+let firebase = require('firebase');
+
+
+firebase.initializeApp({
+	apiKey: "AIzaSyDbW6kUyevj7tEYQ2c6p-s7fwuz0xxx8ps",
+	authDomain: "awesomidi.firebaseapp.com",
+	databaseURL: "https://awesomidi.firebaseio.com",
+	storageBucket: "awesomidi.appspot.com",
+	messagingSenderId: "181061673796"
+});
 
 // Set up a new input.
-var input = new midi.input();
+let input = new midi.input();
 
 // Count the available input ports.
 input.getPortCount();

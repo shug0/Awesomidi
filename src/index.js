@@ -1,49 +1,35 @@
 // CORE
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-// MATERIAL
-import {blue500, cyan700, pinkA200, cyan500} from 'material-ui/styles/colors';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-// SCSS
-import './index.scss';
-import './components/0_Global/SCSS/base.scss';
+
+
+import AppContainer from './components/AppContainer';
+
 // Components
-import App from './components/App';
-import Navigation from './components/0_Global/Navigation/Navigation';
+import KeymapsContainer from './components/1_Keymaps/KeymapsContainer';
+import AuthConnector from './components/2_Users/AuthContainer';
 
-injectTapEventPlugin();
-
-// COLOR THEME
-const muiTheme = getMuiTheme({
-	palette: {
-		primary1Color: blue500,
-		primary2Color: cyan700,
-		accent1Color: pinkA200,
-		pickerHeaderColor: cyan500,
+const userIsLogged = (nextState, replace, callback) => {
+	const state = store.getState();
+	if (!state.auth.isLogged) {
+		replace('login');
 	}
-});
+	callback();
+};
 
-const AppContainer = ({ children, location }) => (
-	<MuiThemeProvider muiTheme={muiTheme}>
-		<div>
-		<Navigation title="Awesomidi"/>
-		{React.cloneElement(children, {
-			key: location.pathname
-		})}
-		</div>
-	</MuiThemeProvider>
-);
+// ------  ROUTER & REDUX -----
 
 ReactDOM.render(
-	<Router history={browserHistory}>
-		<Route path="/" component={AppContainer}>
-			<IndexRoute component={App} />
-		</Route>
-	</Router>,
+	<Provider store={store}>
+		<Router history={browserHistory}>
+			<Route path="/" component={AppContainer}>
+				<IndexRoute component={KeymapsContainer} onEnter={userIsLogged} />
+				<Route path="login" component={AuthConnector}/>
+			</Route>
+		</Router>
+	</Provider>,
 	document.getElementById('root')
 );
