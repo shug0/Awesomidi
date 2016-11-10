@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 export default validate(merge(baseConfig, {
   debug: true,
 
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-eval-source-map',
 
   entry: [
     `webpack-hot-middleware/client?path=http://localhost:${port}/__webpack_hmr`,
@@ -37,18 +37,10 @@ export default validate(merge(baseConfig, {
     // ],
     loaders: [
       {
-        test: /\.global\.css$/,
-        loaders: [
-          'style-loader',
-          'css-loader?sourceMap'
-        ]
-      },
-
-      {
         test: /^((?!\.global).)*\.css$/,
         loaders: [
           'style-loader',
-          'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+          'css-loader?sourceMap'
         ]
       },
 
