@@ -12,7 +12,8 @@ const mapStateToProps = (state) => {
     dialog: state.dialog,
     midi: state.midi.midi,
     events: state.midi.events,
-    listeningEvents: state.midi.listeningEvents
+    listeningEvents: state.midi.listeningEvents,
+    executeBindings: state.midi.executeBindings
 	}
 };
 

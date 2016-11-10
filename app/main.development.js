@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
+const {ipcMain} = require('electron');
 
 let menu;
 let template;
@@ -271,6 +272,18 @@ app.on('ready', async () => {
     menu = Menu.buildFromTemplate(template);
     mainWindow.setMenu(menu);
   }
+});
+
+var exec = require('child_process').exec;
+
+ipcMain.on('commandToExecute', (event, keymap) => {
+  exec(keymap.command, function(error, stdout, stderr) {
+    console.log('stdout: ' + stdout);
+    console.log('stderr: ' + stderr);
+    if (error !== null) {
+      console.log('exec error: ' + error);
+    }
+  });
 });
 
 

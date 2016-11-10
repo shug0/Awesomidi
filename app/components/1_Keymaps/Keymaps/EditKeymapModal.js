@@ -35,7 +35,7 @@ class EditKeymapModal extends Component {
       nextProps.events[nextProps.events.length-1].action === 'keyUp') {
       this.setState({
         waitingInput: false,
-        keymapID: nextProps.events[nextProps.events.length-1].key
+        keyID: nextProps.events[nextProps.events.length-1].key
       });
       this.props.stopListeningEvents();
       this.props.startExecuteBindings();

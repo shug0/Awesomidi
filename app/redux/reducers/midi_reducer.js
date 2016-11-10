@@ -1,6 +1,7 @@
 import {
   INIT_MIDI,
   RECEIVE_MIDI_EVENT,
+  RECEIVE_MIDI_EVENT_TO_EXECUTE,
   START_LISTENING_EVENTS,
   STOP_LISTENING_EVENTS,
   START_EXECUTE_BINDINGS,
@@ -41,6 +42,9 @@ function midi(state = midiInitialState, action) {
         ...state,
         events: [...state.events, action.event]
       };
+
+    case RECEIVE_MIDI_EVENT_TO_EXECUTE:
+      return state;
 
     case START_EXECUTE_BINDINGS:
       return {

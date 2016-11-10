@@ -13,7 +13,7 @@ class AddKeymapModal extends Component {
       open: true,
       keymapName: '',
       keymapCommand: '',
-      keymapID: '',
+      keyID: '',
       waitingInput: false,
     };
     this.handleChangeName = this.handleChangeName.bind(this);
@@ -35,7 +35,7 @@ class AddKeymapModal extends Component {
       nextProps.events[nextProps.events.length-1].action === 'keyUp') {
       this.setState({
         waitingInput: false,
-        keymapID: nextProps.events[nextProps.events.length-1].key
+        keyID: nextProps.events[nextProps.events.length-1].key
       });
       this.props.stopListeningEvents();
     }
@@ -64,7 +64,7 @@ class AddKeymapModal extends Component {
     const newKeymap = {
       name: this.state.keymapName,
       command: this.state.keymapCommand,
-      keyID: this.state.keymapID
+      keyID: this.state.keyID
     };
     this.props.addKeymap(newKeymap);
     this.props.closeDialog();
@@ -94,11 +94,11 @@ class AddKeymapModal extends Component {
     ];
 
     const labelBindingKeyButton = () => {
-      if (this.state.keymapID === '' && !this.state.waitingInput) {
+      if (this.state.keyID === '' && !this.state.waitingInput) {
         return 'Bind MIDI Key';
       }
-      if (this.state.keymapID !== '' && !this.state.waitingInput) {
-        return 'Key : '+ this.state.keymapID;
+      if (this.state.keyID !== '' && !this.state.waitingInput) {
+        return 'Key : '+ this.state.keyID;
       }
       if (this.state.waitingInput) {
         return 'Press the key to assign...';

@@ -14,8 +14,12 @@ class MidiListener extends Component {
       .catch((err) => { console.error('Midi connexion error', err) } );
 
     const onMidiEvent = event => {
+
       if (this.props.listeningEvents) {
         this.props.receiveMidiEvent(event)
+      }
+      if (this.props.executeBindings) {
+        this.props.receiveMidiEventToExecute(event, this.props.keymaps)
       }
     }
 
