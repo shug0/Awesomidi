@@ -4,13 +4,14 @@ import React, { Component } from 'react';
 import {grey900} from 'material-ui/styles/colors';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import RaisedButton from 'material-ui/RaisedButton';
 
 // Components
 import AddKeymapModal from './Keymaps/AddKeymapModal';
 import EditKeymapModal from './Keymaps/EditKeymapModal';
 
 import KeymapsList from './Keymaps/KeymapList';
+
+import MidiListener from '../3_Midi/MidiListener';
 
 class KeymapsManager extends Component {
 
@@ -65,6 +66,8 @@ class KeymapsManager extends Component {
             keymap={this.props.keymaps[this.state.indexToEdit]}
           />
         }
+
+        <MidiListener {...this.props} />
 
 			</section>
 		);

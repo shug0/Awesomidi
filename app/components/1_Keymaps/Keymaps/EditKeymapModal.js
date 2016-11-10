@@ -13,12 +13,40 @@ class EditKeymapModal extends Component {
       open: true,
       keymapName: props.keymap.name,
       keymapCommand: props.keymap.command,
-      keymapKeyID: 'YOLO'
+      keyID: props.keymap.keyID,
+      waitingInput: false,
     };
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeCommand = this.handleChangeCommand.bind(this);
-    this.handleChangeID = this.handleChangeID.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleBindMidiKey = this.handleBindMidiKey.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.stopExecuteBindings();
+  }
+
+  componentWillUnmount() {
+    this.props.startExecuteBindings();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.state.waitingInput &&
+      nextProps.events[nextProps.events.length-1].action === 'keyUp') {
+      this.setState({
+        waitingInput: false,
+        keymapID: nextProps.events[nextProps.events.length-1].key
+      });
+      this.props.stopListeningEvents();
+      this.props.startExecuteBindings();
+    }
+  }
+
+  handleBindMidiKey() {
+    this.props.startListeningEvents();
+    this.setState({
+      waitingInput: true,
+    });
   }
 
   handleChangeName(event) {
@@ -33,17 +61,11 @@ class EditKeymapModal extends Component {
     });
   };
 
-  handleChangeID(event) {
-    this.setState({
-      keymapID: event.target.value,
-    });
-  };
-
   handleSubmit() {
     const newKeymap = {
       name: this.state.keymapName,
       command: this.state.keymapCommand,
-      ID: this.state.keymapKeyID
+      keyID: this.state.keyID
     };
     this.props.editKeymap(this.props.index, newKeymap);
     this.props.closeDialog();
@@ -63,16 +85,26 @@ class EditKeymapModal extends Component {
         label="Cancel"
         primary={true}
         onTouchTap={this.props.closeDialog}
-        disableTouchRipple
       />,
       <FlatButton
         label="Save"
         primary={true}
         disabled={formFilled}
         onTouchTap={this.handleSubmit}
-        disableTouchRipple
       />,
     ];
+
+    const labelBindingKeyButton = () => {
+      if (this.state.keyID === '' && !this.state.waitingInput) {
+        return 'Bind MIDI Key';
+      }
+      if (this.state.keyID !== '' && !this.state.waitingInput) {
+        return 'Key : '+ this.state.keyID;
+      }
+      if (this.state.waitingInput) {
+        return 'Press the key to assign...';
+      }
+    };
 
     return (
       <div>
@@ -95,9 +127,10 @@ class EditKeymapModal extends Component {
             style={{width: '100%'}}
           />
           <RaisedButton
-            label="Bind MIDI Key"
+            label={labelBindingKeyButton()}
             labelPosition="before"
             containerElement="label"
+            onTouchTap={this.handleBindMidiKey}
             disableTouchRipple
             style={{
               marginTop: '1em'

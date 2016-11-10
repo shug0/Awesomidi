@@ -3,7 +3,8 @@ import React from 'react';
 import {blue500, cyan700, pinkA200, cyan500} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Navigation from '../components/0_Global/Navigation/Navigation';
+// COMPONENT
+import Navigation from '../components/0_Global/Navigation/NavigationContainer';
 
 // CSS
 import './0_Global/CSS/reset.css';

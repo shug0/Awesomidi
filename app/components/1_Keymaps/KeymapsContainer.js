@@ -10,7 +10,9 @@ const mapStateToProps = (state) => {
 	return {
 		keymaps: state.keymaps.keymaps,
     dialog: state.dialog,
-    midi: state.midi
+    midi: state.midi.midi,
+    events: state.midi.events,
+    listeningEvents: state.midi.listeningEvents
 	}
 };
 
