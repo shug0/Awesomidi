@@ -1,6 +1,8 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
 const {ipcMain} = require('electron');
 
+const fs = require('fs');
+
 let menu;
 let template;
 let mainWindow = null;
@@ -277,9 +279,10 @@ app.on('ready', async () => {
 var exec = require('child_process').exec;
 
 ipcMain.on('commandToExecute', (event, keymap) => {
-  exec(keymap.command, function(error, stdout, stderr) {
+  exec('PATH=$PATH:/usr/local/bin && ' + keymap.command, function(error, stdout, stderr) {
     console.log('stdout: ' + stdout);
     console.log('stderr: ' + stderr);
+    fs.writeFileSync('/Users/thomas/test.txt', stdout);
     if (error !== null) {
       console.log('exec error: ' + error);
     }

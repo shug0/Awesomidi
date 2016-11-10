@@ -1,15 +1,14 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
+  "name": "Awesomidi",
+  "productName": "awesomidi",
   "version": "1.0.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "description": "Awesome application for binding your MIDI key",
   "main": "./main.js",
   "author": {
-    "name": "C. T. Lin",
-    "email": "chentsulin@gmail.com",
-    "url": "https://github.com/chentsulin"
+    "name": "Thomas Alberola",
+    "email": "thomas@needacoffee.fr",
+    "url": "https://github.com/shug0/Awesomidi"
   },
-  "license": "MIT",
   "dependencies": {
     "source-map-support": "^0.4.3"
   }
