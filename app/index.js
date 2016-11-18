@@ -12,8 +12,22 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();
 
-const store = configureStore();
+const initialState = {
+  keymaps: JSON.parse(localStorage.getItem('keymaps')) || {
+    keymaps: []
+  }
+};
+
+const store = configureStore(initialState);
 const history = syncHistoryWithStore(hashHistory, store);
+
+
+store.subscribe(() => {
+  localStorage.setItem('keymaps', JSON.stringify(
+    store.getState().keymaps
+  ));
+});
+
 
 ReactDOM.render(
 	<Provider store={store}>
