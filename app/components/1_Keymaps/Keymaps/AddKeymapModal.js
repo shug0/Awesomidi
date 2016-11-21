@@ -16,10 +16,11 @@ class AddKeymapModal extends Component {
       keyID: '',
       waitingInput: false,
     };
-    this.handleChangeName = this.handleChangeName.bind(this);
-    this.handleChangeCommand = this.handleChangeCommand.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleBindMidiKey = this.handleBindMidiKey.bind(this);
+    this.handleChangeName     = this.handleChangeName.bind(this);
+    this.handleChangeCommand  = this.handleChangeCommand.bind(this);
+    this.handleSubmit         = this.handleSubmit.bind(this);
+    this.handleBindMidiKey    = this.handleBindMidiKey.bind(this);
+    this.handleError          = this.handleError.bind(this);
   }
 
   componentDidMount() {
@@ -33,11 +34,23 @@ class AddKeymapModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.state.waitingInput &&
       nextProps.events[nextProps.events.length-1].action === 'keyUp') {
-      this.setState({
-        waitingInput: false,
-        keyID: nextProps.events[nextProps.events.length-1].key
-      });
-      this.props.stopListeningEvents();
+
+        console.log(nextProps.events[nextProps.events.length-1].key);
+
+        const redundancyKeymaps = this.props.keymaps.filter((keymap) => {
+          return(keymap.keyID === nextProps.events[nextProps.events.length-1].key);
+        }).length;
+
+      if (redundancyKeymaps === 0) {
+        this.setState({
+          waitingInput: false,
+          keyID: nextProps.events[nextProps.events.length-1].key
+        });
+        this.props.stopListeningEvents();
+      }
+      else {
+        this.handleError('This key is already used.')
+      }
     }
   }
 
@@ -45,6 +58,7 @@ class AddKeymapModal extends Component {
     this.props.startListeningEvents();
     this.setState({
       waitingInput: true,
+      keyID: ''
     });
   }
 
@@ -59,6 +73,10 @@ class AddKeymapModal extends Component {
       keymapCommand: event.target.value,
     });
   };
+
+  handleError(error) {
+    console.log(error);
+  }
 
   handleSubmit() {
     const newKeymap = {
@@ -76,7 +94,7 @@ class AddKeymapModal extends Component {
     const formFilled = !(
       this.state.keymapName.length > 2 &&
       this.state.keymapCommand.length > 2 &&
-      this.state.keymapKeyID !== null
+      this.state.keyID !== null
     );
 
     const actions = [
