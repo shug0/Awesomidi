@@ -7,19 +7,30 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 class EditKeymapModal extends Component {
 
-  constructor(props) {
+  constructor() {
     super();
     this.state = {
       open: true,
-      keymapName: props.keymap.name,
-      keymapCommand: props.keymap.command,
-      keyID: props.keymap.keyID,
+      keymapName: '',
+      keymapCommand: '',
+      keyID: '',
       waitingInput: false,
     };
-    this.handleChangeName = this.handleChangeName.bind(this);
-    this.handleChangeCommand = this.handleChangeCommand.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleBindMidiKey = this.handleBindMidiKey.bind(this);
+    this.handleChangeName     = this.handleChangeName.bind(this);
+    this.handleChangeCommand  = this.handleChangeCommand.bind(this);
+    this.handleSubmit         = this.handleSubmit.bind(this);
+    this.handleBindMidiKey    = this.handleBindMidiKey.bind(this);
+    this.handleError          = this.handleError.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.action === 'edit') {
+      this.setState({
+        keymapName: this.props.keymap.name,
+        keymapCommand: this.props.keymap.command,
+        keyID: this.props.keymap.keyID,
+      });
+    }
   }
 
   componentDidMount() {
@@ -33,12 +44,23 @@ class EditKeymapModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.state.waitingInput &&
       nextProps.events[nextProps.events.length-1].action === 'keyUp') {
-      this.setState({
-        waitingInput: false,
-        keyID: nextProps.events[nextProps.events.length-1].key
-      });
-      this.props.stopListeningEvents();
-      this.props.startExecuteBindings();
+
+      console.log(nextProps.events[nextProps.events.length-1].key);
+
+      const redundancyKeymaps = this.props.keymaps.filter((keymap) => {
+        return(keymap.keyID === nextProps.events[nextProps.events.length-1].key);
+      }).length;
+
+      if (redundancyKeymaps === 0) {
+        this.setState({
+          waitingInput: false,
+          keyID: nextProps.events[nextProps.events.length-1].key
+        });
+        this.props.stopListeningEvents();
+      }
+      else {
+        this.handleError('This key is already used.')
+      }
     }
   }
 
@@ -46,6 +68,7 @@ class EditKeymapModal extends Component {
     this.props.startListeningEvents();
     this.setState({
       waitingInput: true,
+      keyID: ''
     });
   }
 
@@ -61,13 +84,24 @@ class EditKeymapModal extends Component {
     });
   };
 
+  handleError(error) {
+    console.log(error);
+  }
+
   handleSubmit() {
     const newKeymap = {
       name: this.state.keymapName,
       command: this.state.keymapCommand,
       keyID: this.state.keyID
     };
-    this.props.editKeymap(this.props.index, newKeymap);
+
+    if (this.props.action === 'edit' && this.props.index) {
+      this.props.editKeymap(this.props.index, newKeymap);
+    }
+    if (this.props.action === 'add') {
+      this.props.addKeymap(newKeymap);
+    }
+
     this.props.closeDialog();
   };
 
@@ -77,7 +111,7 @@ class EditKeymapModal extends Component {
     const formFilled = !(
       this.state.keymapName.length > 2 &&
       this.state.keymapCommand.length > 2 &&
-      this.state.keymapKeyID !== null
+      this.state.keyID !== null
     );
 
     const actions = [
@@ -87,7 +121,7 @@ class EditKeymapModal extends Component {
         onTouchTap={this.props.closeDialog}
       />,
       <FlatButton
-        label="Save"
+        label="Add"
         primary={true}
         disabled={formFilled}
         onTouchTap={this.handleSubmit}
@@ -106,10 +140,15 @@ class EditKeymapModal extends Component {
       }
     };
 
+    let title;
+    if (this.props.action === 'add') title = 'Add a new keymap';
+    if (this.props.action === 'edit') title = 'Edit keymap';
+
+
     return (
       <div>
         <Dialog
-          title="Edit Keymap"
+          title={title}
           actions={actions}
           modal={true}
           open={this.state.open}

@@ -6,7 +6,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 // Components
-import AddKeymapModal from './Keymaps/AddKeymapModal';
 import EditKeymapModal from './Keymaps/EditKeymapModal';
 
 import KeymapsList from './Keymaps/KeymapList';
@@ -56,12 +55,16 @@ class KeymapsManager extends Component {
         </FloatingActionButton>
 
         {this.props.dialog.dialogType === 'addKeymap' &&
-          <AddKeymapModal {...this.props} />
+          <EditKeymapModal
+            action={'add'}
+            {...this.props}
+          />
         }
 
         {this.props.dialog.dialogType === 'editKeymap' &&
           <EditKeymapModal
             {...this.props}
+            action={'edit'}
             index={this.state.indexToEdit}
             keymap={this.props.keymaps[this.state.indexToEdit]}
           />
