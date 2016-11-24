@@ -3,10 +3,8 @@ import React, { Component } from 'react';
 // MATERIAL
 import Avatar from 'material-ui/Avatar';
 import {List, ListItem} from 'material-ui/List';
-import NeutralFace from 'material-ui/svg-icons/social/sentiment-neutral';
+import FontIcon from 'material-ui/FontIcon';
 import Paper from 'material-ui/Paper';
-import IconButton from 'material-ui/IconButton';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
 
 class KeymapList extends Component {
 
@@ -30,7 +28,13 @@ class KeymapList extends Component {
 						key={index}
 						primaryText={item.name}
 						secondaryText={item.command}
-						leftAvatar={<Avatar icon={<NeutralFace />} />}
+						leftAvatar={<Avatar icon={<FontIcon
+              style={{
+                paddingTop: '2px',
+                textAlign: 'center',
+                fontSize: '20px'
+              }}
+              className={item.iconClass}/>} />}
 						onTouchTap={() => this.props.handleKeymapIsClicked(index)}
 					/>
 				);
