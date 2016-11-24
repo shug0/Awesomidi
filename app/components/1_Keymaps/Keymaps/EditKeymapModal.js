@@ -42,10 +42,12 @@ class EditKeymapModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    this.handleMidiEvent(nextProps);
+  }
+
+  handleMidiEvent(nextProps) {
     if (this.state.waitingInput &&
       nextProps.events[nextProps.events.length-1].action === 'keyUp') {
-
-      console.log(nextProps.events[nextProps.events.length-1].key);
 
       const redundancyKeymaps = this.props.keymaps.filter((keymap) => {
         return(keymap.keyID === nextProps.events[nextProps.events.length-1].key);
@@ -129,15 +131,10 @@ class EditKeymapModal extends Component {
     ];
 
     const labelBindingKeyButton = () => {
-      if (this.state.keyID === '' && !this.state.waitingInput) {
-        return 'Bind MIDI Key';
-      }
-      if (this.state.keyID !== '' && !this.state.waitingInput) {
-        return 'Key : '+ this.state.keyID;
-      }
-      if (this.state.waitingInput) {
-        return 'Press the key to assign...';
-      }
+      if (this.state.keyID === '' && !this.state.waitingInput) return 'Bind MIDI Key';
+      if (this.state.keyID !== '' && !this.state.waitingInput) return 'Key : '+ this.state.keyID;
+      if (this.state.waitingInput) return 'Press the key to assign...';
+
     };
 
     let title;
