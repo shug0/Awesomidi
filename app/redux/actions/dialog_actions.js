@@ -5,6 +5,7 @@ export const showDialog = (dialogType) => ({
 });
 
 export const HIDE_DIALOG = 'HIDE_DIALOG';
-export const closeDialog = () => ({
+export const closeDialog = (dialogType) => ({
   type: HIDE_DIALOG,
+  dialogType: dialogType
 });

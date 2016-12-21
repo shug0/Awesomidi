@@ -56,7 +56,6 @@ class KeymapsManager extends Component {
 
         {this.props.dialog.dialogType === 'addKeymap' &&
           <EditKeymapModal
-            action={'add'}
             {...this.props}
           />
         }
@@ -64,7 +63,6 @@ class KeymapsManager extends Component {
         {this.props.dialog.dialogType === 'editKeymap' &&
           <EditKeymapModal
             {...this.props}
-            action={'edit'}
             index={this.state.indexToEdit}
             keymap={this.props.keymaps[this.state.indexToEdit]}
           />

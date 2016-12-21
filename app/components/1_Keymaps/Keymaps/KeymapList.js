@@ -8,14 +8,6 @@ import Paper from 'material-ui/Paper';
 
 class KeymapList extends Component {
 
-	constructor() {
-		super();
-		this.state = {
-			keymapToDeleteIndex: null,
-			keymapToEditIndex: null
-		};
-	}
-
 	render(){
 
 		let listItems;

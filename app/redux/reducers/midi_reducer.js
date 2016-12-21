@@ -38,10 +38,16 @@ function midi(state = midiInitialState, action) {
       };
 
     case RECEIVE_MIDI_EVENT:
-      return {
-        ...state,
-        events: [...state.events, action.event]
-      };
+      if (action.event) {
+        return {
+          ...state,
+          events: [...state.events, action.event]
+        };
+      }
+      else {
+        return state
+      }
+
 
     case RECEIVE_MIDI_EVENT_TO_EXECUTE:
       return state;

@@ -21,7 +21,8 @@ export const receiveMidiEvent = (event) => {
   const eventFormated = {
     key: event.data[1],
     action: event.data[0] === 144 ? 'keyDown' : event.data[0] === 128 ? 'keyUp' : 'other',
-    velocity: event.data[2]
+    velocity: event.data[2],
+    unformated: event
   };
   return {
     type: RECEIVE_MIDI_EVENT,

@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 // Components
 import EditAvatar from './EditAvatar';
+import EditMidiKey from './EditMidiKey';
 
 class EditKeymapModal extends Component {
 
@@ -18,21 +18,19 @@ class EditKeymapModal extends Component {
       command: '',
       keyID: '',
       iconClass: '',
-      waitingInput: false,
     };
     this.handleChangeName     = this.handleChangeName.bind(this);
     this.handleChangeCommand  = this.handleChangeCommand.bind(this);
+    this.handleChangeKey      = this.handleChangeKey.bind(this);
     this.handleSubmit         = this.handleSubmit.bind(this);
     this.handleDelete         = this.handleDelete.bind(this);
-    this.handleBindMidiKey    = this.handleBindMidiKey.bind(this);
-    this.handleError          = this.handleError.bind(this);
     this.handleOpenIconModal  = this.handleOpenIconModal.bind(this);
     this.handleCloseIconModal = this.handleCloseIconModal.bind(this);
     this.handleChangeIcon     = this.handleChangeIcon.bind(this);
   }
 
   componentWillMount() {
-    if (this.props.action === 'edit') {
+    if (this.props.dialog.dialogType === 'editKeymap') {
       this.setState({
         name: this.props.keymap.name,
         command: this.props.keymap.command,
@@ -50,38 +48,6 @@ class EditKeymapModal extends Component {
     this.props.startExecuteBindings();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.handleMidiEvent(nextProps);
-  }
-
-  handleMidiEvent(nextProps) {
-    if (this.state.waitingInput &&
-      nextProps.events[nextProps.events.length-1].action === 'keyUp') {
-
-      const redundancyKeymaps = this.props.keymaps.filter((keymap) => {
-        return(keymap.keyID === nextProps.events[nextProps.events.length-1].key);
-      }).length;
-
-      if (redundancyKeymaps === 0) {
-        this.setState({
-          waitingInput: false,
-          keyID: nextProps.events[nextProps.events.length-1].key
-        });
-        this.props.stopListeningEvents();
-      }
-      else {
-        this.handleError('This key is already used.')
-      }
-    }
-  }
-
-  handleBindMidiKey() {
-    this.props.startListeningEvents();
-    this.setState({
-      waitingInput: true,
-      keyID: ''
-    });
-  }
 
   handleChangeName(event) {
     this.setState({
@@ -102,8 +68,10 @@ class EditKeymapModal extends Component {
     });
   }
 
-  handleError(error) {
-    console.log(error);
+  handleChangeKey(key) {
+    this.setState({
+      keyID: key,
+    });
   }
 
   handleDelete() {
@@ -118,8 +86,8 @@ class EditKeymapModal extends Component {
       iconClass: this.state.iconClass,
       keyID: this.state.keyID
     };
-    this.props.action === 'edit' && this.props.index && this.props.editKeymap(this.props.index, newKeymap);
-    this.props.action === 'add' && this.props.addKeymap(newKeymap);
+    this.props.dialog.dialogType === 'editKeymap' && this.props.index && this.props.editKeymap(this.props.index, newKeymap);
+    this.props.dialog.dialogType === 'addKeymap' && this.props.addKeymap(newKeymap);
     this.props.closeDialog();
   };
 
@@ -137,33 +105,28 @@ class EditKeymapModal extends Component {
 
   render() {
 
+    const { dialog } = this.props;
+    const { name, command, keyID, iconClass, open, openIconModal } = this.state;
+
     // If all the form are filled => true
     const formFilled = !(
-      this.state.name.length > 2 &&
-      this.state.command.length > 2 &&
-      this.state.keyID !== null
+      name.length > 2 &&
+      command.length > 2 &&
+      keyID !== null
     );
 
     // Assigning text depending on the action
     let titleText;
     let principalButtonText;
 
-    if (this.props.action === 'add') {
+    if (dialog.dialogType === 'addKeymap') {
       titleText = 'Add a new keymap';
       principalButtonText = 'Add';
     }
-    if (this.props.action === 'edit') {
+    if (dialog.dialogType === 'editKeymap') {
       titleText = 'Edit keymap';
       principalButtonText = 'Save';
     }
-
-    // Changing text on the binding midi button
-    const labelBindingKeyButton = () => {
-      if (this.state.keyID === '' && !this.state.waitingInput) return 'Bind MIDI Key';
-      if (this.state.keyID !== '' && !this.state.waitingInput) return 'Key : '+ this.state.keyID;
-      if (this.state.waitingInput) return 'Press the key to assign...';
-    };
-
 
     const actions = [
       <FlatButton
@@ -190,37 +153,30 @@ class EditKeymapModal extends Component {
           title={titleText}
           actions={actions}
           modal={true}
-          open={this.state.open}
+          open={open}
         >
           <EditAvatar
-            iconClass={this.state.iconClass}
-            open={this.state.openIconModal}
+            iconClass={iconClass}
+            open={openIconModal}
             handleChangeIcon={this.handleChangeIcon}
             requestOpen={this.handleOpenIconModal}
             requestClose={this.handleCloseIconModal}
           />
           <TextField
             floatingLabelText="Name"
-            value={this.state.name}
+            value={name}
             onChange={this.handleChangeName}
             style={{width: '100%'}}
           />
           <TextField
             floatingLabelText="Command"
-            value={this.state.command}
+            value={command}
             onChange={this.handleChangeCommand}
             style={{width: '100%'}}
           />
-          <RaisedButton
-            label={labelBindingKeyButton()}
-            labelPosition="before"
-            containerElement="label"
-            onTouchTap={this.handleBindMidiKey}
-            disableTouchRipple
-            style={{
-              marginTop: '1em'
-            }}
-          />
+
+          <EditMidiKey {...this.props} keyID={this.state.keyID} />
+
         </Dialog>
       </div>
     );
